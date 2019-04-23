@@ -1,0 +1,86 @@
+hash: 4105ca0b5f91bf4ba975cb800572d5525ab03ce44fe5a80123832a196b903f2a
+updated: 2019-04-13T07:37:18.601483731-05:00
+imports:
+- name: github.com/armon/go-metrics
+  version: f0300d1749da6fa982027e449ec0c7a145510c3c
+- name: github.com/BurntSushi/toml
+  version: a368813c5e648fee92e5f6c30e3944ff9d5e8895
+- name: github.com/edgexfoundry/device-sdk-go
+  version: 58ceab4ca78d83c4ad32384cd9246de601e88c4e
+  subpackages:
+  - internal/cache
+  - internal/clients
+  - internal/common
+  - internal/config
+  - internal/controller
+  - internal/handler
+  - internal/provision
+  - internal/registry
+  - internal/scheduler
+  - internal/transformer
+  - pkg/models
+  - pkg/startup
+- name: github.com/edgexfoundry/edgex-go
+  version: 996c06895153f62347005a0c8a04887357af9b80
+  subpackages:
+  - pkg/clients
+  - pkg/clients/coredata
+  - pkg/clients/logging
+  - pkg/clients/metadata
+  - pkg/clients/types
+  - pkg/models
+- name: github.com/edgexfoundry/go-mod-core-contracts
+  version: 838c1e45fef149d43116160a6446a2f890fe1aa6
+  subpackages:
+  - clients
+  - clients/logger
+  - clients/types
+  - models
+- name: github.com/go-kit/kit
+  version: ec9b73a8e9864a3dba3753533956209289666008
+  subpackages:
+  - log
+- name: github.com/go-logfmt/logfmt
+  version: 07c9b44f60d7ffdfb7d8efe1ad539965737836dc
+- name: github.com/google/uuid
+  version: 0cd6bf5da1e1c83f8b45653022c74f71af0538a4
+- name: github.com/gorilla/context
+  version: 51ce91d2eaddeca0ef29a71d766bb3634dadf729
+- name: github.com/gorilla/mux
+  version: e3702bed27f0d39777b0b37b664b6280e8ef8fbf
+- name: github.com/hashicorp/consul
+  version: 5174058f0d2bda63fa5198ab96c33d9a909c58ed
+  subpackages:
+  - api
+- name: github.com/hashicorp/go-cleanhttp
+  version: d3fcbee8e1810ecee4bdbf415f42f84cfd0e3361
+- name: github.com/hashicorp/go-immutable-radix
+  version: 27df80928bb34bb1b0d6d0e01b9e679902e7a6b5
+- name: github.com/hashicorp/go-rootcerts
+  version: 63503fb4e1eca22f9ae0f90b49c5d5538a0e87eb
+- name: github.com/hashicorp/golang-lru
+  version: 7087cb70de9f7a8bc0a10c375cb0d2280a8edf9c
+  subpackages:
+  - simplelru
+- name: github.com/hashicorp/serf
+  version: 15cfd05de3dffb3664aa37b06e91f970b825e380
+  subpackages:
+  - coordinate
+- name: github.com/kr/logfmt
+  version: b84e30acd515aadc4b783ad4ff83aff3299bdfe0
+- name: github.com/mitchellh/go-homedir
+  version: af06845cf3004701891bf4fdb884bfe4920b3727
+- name: github.com/robfig/cron
+  version: b41be1df696709bb6395fe435af20370037c0b4c
+- name: github.com/ugorji/go
+  version: c8f752a850d09ea4f08812add5b1cb569ddc0c2f
+  subpackages:
+  - codec
+- name: gopkg.in/mgo.v2
+  version: 3f83fa5005286a7fe593b055f0d7771a7dce4655
+  subpackages:
+  - bson
+  - internal/json
+- name: gopkg.in/yaml.v2
+  version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
+testImports: []

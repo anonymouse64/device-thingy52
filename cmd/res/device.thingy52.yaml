@@ -1,0 +1,37 @@
+name: "nordic-thingy52"
+manufacturer: "Canonical"
+model: "Nordic-Thingy52-01"
+labels:
+- "device-thingy52"
+description: "Nordic Thingy52 BLE sensor device"
+
+deviceResources:
+-
+  name: "Heading"
+  description: "Compass heading"
+  properties:
+    value:
+      { type: "Float32", readWrite: "R", minimum: "0", maximum: "100000"}
+    units:
+      { type: "String", readWrite: "R", defaultValue: "heading in degrees" }
+
+resources:
+-
+  name: "GenerateHeading_Float32"
+  get:
+  - { operation: "get", object: "Heading", property: "value", parameter: "Heading" }
+
+commands:
+-
+  name: "GenerateHeading_Float32"
+  get:
+    path: "/api/v1/device/{deviceId}/GenerateHeading_Float32"
+    responses:
+    -
+      code: "200"
+      description: ""
+      expectedValues: ["Heading"]
+    -
+      code: "503"
+      description: "service unavailable"
+      expectedValues: []

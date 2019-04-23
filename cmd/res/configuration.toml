@@ -1,0 +1,76 @@
+[Service]
+Host = "localhost"
+Port = 49973
+ConnectRetries = 3
+Labels = []
+OpenMsg = "device thingy52 started"
+ReadMaxLimit = 2560000000
+Timeout = 5000
+EnableAsyncReadings = true
+AsyncBufferSize = 16
+
+[Registry]
+Host = "localhost"
+Port = 8500
+CheckInterval = "10s"
+FailLimit = 3
+FailWaitTime = 10
+
+[Logging]
+EnableRemote = false
+File = "./device-random.log"
+Level = "INFO"
+
+[Clients]
+  [Clients.Data]
+  Name = "edgex-core-data"
+  Protocol = "http"
+  Host = "localhost"
+  Port = 48080
+  Timeout = 5000
+
+  [Clients.Metadata]
+  Name = "edgex-core-metadata"
+  Protocol = "http"
+  Host = "localhost"
+  Port = 48081
+  Timeout = 5000
+
+  [Clients.Logging]
+  Name = "edgex-support-logging"
+  Protocol = "http"
+  Host = "localhost"
+  Port = 48061
+  Timeout = 5000
+
+[Device]
+  DataTransform = true
+  InitCmd = ""
+  InitCmdArgs = ""
+  MaxCmdOps = 128
+  MaxCmdValueLen = 256
+  RemoveCmd = ""
+  RemoveCmdArgs = ""
+  ProfilesDir = "./res"
+
+# Pre-define Devices
+[[DeviceList]]
+  Name = "nordic-thingy52-01"
+  Profile = "nordic-thingy52"
+  Description = "Nordic Thingy52 BLE sensor device"
+  Labels = [ "device-thingy52" ]
+  [DeviceList.Addressable]
+    Address = "nordic-thingy52-1"
+    Protocol = "OTHER"
+
+# Pre-define Schedule Configuration
+[[Schedules]]
+Name = "1hz-schedule"
+Frequency = "PT1S"
+
+[[ScheduleEvents]]
+Name = "read-nordic-thingy52-heading"
+Schedule = "1sec-schedule"
+  [ScheduleEvents.Addressable]
+  HTTPMethod = "GET"
+  Path = "/api/v1/device/name/nordic-thingy52-01/GenerateHeading_Float32"

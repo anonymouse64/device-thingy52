@@ -1,0 +1,77 @@
+name: edgexfoundry-device-thingy52
+base: core18
+version: "replace-me"
+version-script: |
+  echo 0.7.1-$(date +%Y%m%d)+$(git rev-parse --short HEAD)
+license: Apache-2.0
+summary: EdgeX Device Service for Nordic Thingy52 BLE sensor
+description: |
+  Interact with the Nordic Thingy52 Bluetooth Low Energy sensor platform using
+  EdgeX Foundry.
+
+grade: stable
+confinement: strict
+
+apps:
+  device-thingy52:
+    command: bin/go-service-wrapper.sh device-thingy52
+    daemon: simple
+    restart-condition: always
+    plugs: [network, network-bind]
+
+parts:
+  ci-snaps-common:
+    plugin: dump
+    source: https://github.com/anonymouse64/ci-snaps-common.git
+    source-branch: feature/initial
+    stage:
+      - bin/*
+    prime:
+      - bin/go-service-wrapper.sh
+  go:
+    plugin: nil
+    source: https://go.googlesource.com/go
+    source-type: git
+    source-tag: go1.11.2
+    source-depth: 1
+    build-packages: [golang-go, g++]
+    override-build: |
+      cd src && env GOROOT_BOOTSTRAP=$(go env GOROOT | tr -d '\n') GO111MODULE=off ./make.bash
+      cd ..
+      cp -R bin $SNAPCRAFT_PART_INSTALL
+    stage:
+      - "bin"
+    prime:
+      - "-*"
+    after: [ci-snaps-common]
+  device-thingy52:
+    source: .
+    plugin: make
+    after:
+      - go
+    override-build: |
+      . $SNAPCRAFT_STAGE/bin/go-build-helper.sh
+      gopartbootstrap github.com/edgexfoundry/device-thingy52
+
+      make prepare
+      make build
+
+      install -DT "./cmd/device-thingy52" "$SNAPCRAFT_PART_INSTALL/bin/device-thingy52"
+      install -d "$SNAPCRAFT_PART_INSTALL/config/device-thingy52/res/"
+
+      # Override 'LogFile'      
+      cat "./cmd/res/configuration.toml" | \
+        sed -e s:\"./device-thingy52.log\":\'\$SNAP_COMMON/device-thingy52.log\': > \
+        "$SNAPCRAFT_PART_INSTALL/config/device-thingy52/res/configuration.toml"
+
+      # install device profile as well
+      install -T "./cmd/res/device.thingy52.yaml" \
+        "$SNAPCRAFT_PART_INSTALL/config/device-thingy52/res/device.thingy52.yaml"
+
+      # install license and attribution.txt
+      # TODO: add attribution.txt to this repo
+      # install -DT "./cmd/Attribution.txt" \
+      #    "$SNAPCRAFT_PART_INSTALL/usr/share/doc/device-thingy52/Attribution.txt"
+      install -DT "./LICENSE" \
+         "$SNAPCRAFT_PART_INSTALL/usr/share/doc/device-thingy52/LICENSE"
+
