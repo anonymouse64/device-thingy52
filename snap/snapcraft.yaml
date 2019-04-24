@@ -1,4 +1,4 @@
-name: edgexfoundry-device-thingy52
+name: edgexfoundry-device-thingy52-ijohnson
 base: core18
 version: "replace-me"
 version-script: |
@@ -17,7 +17,10 @@ apps:
     command: bin/go-service-wrapper.sh device-thingy52
     daemon: simple
     restart-condition: always
-    plugs: [network, network-bind]
+    plugs: 
+      - network
+      - network-bind
+      - bluez
 
 parts:
   ci-snaps-common:
@@ -28,6 +31,23 @@ parts:
       - bin/*
     prime:
       - bin/go-service-wrapper.sh
+  glide:
+    plugin: dump
+    source:
+      - on amd64: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-amd64.tar.gz
+      - else:
+        - on arm64: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-arm64.tar.gz
+        - else:
+          - on armhf: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-armv7.tar.gz
+          - else:
+            - on i386: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-386.tar.gz
+      - else fail
+    prime:
+      - -*
+    organize:
+      glide: bin/glide
+    stage:
+      - bin/glide
   go:
     plugin: nil
     source: https://go.googlesource.com/go
@@ -43,7 +63,7 @@ parts:
       - "bin"
     prime:
       - "-*"
-    after: [ci-snaps-common]
+    after: [ci-snaps-common, glide]
   device-thingy52:
     source: .
     plugin: make
@@ -51,7 +71,7 @@ parts:
       - go
     override-build: |
       . $SNAPCRAFT_STAGE/bin/go-build-helper.sh
-      gopartbootstrap github.com/edgexfoundry/device-thingy52
+      gopartbootstrap github.com/anonymouse64/device-thingy52
 
       make prepare
       make build

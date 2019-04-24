@@ -3,10 +3,18 @@ import:
 - package: github.com/edgexfoundry/device-sdk-go
   version: delhi
   subpackages:
-  - /pkg/models
-  - /pkg/startup
+  - pkg/models
+  - pkg/startup
 - package: github.com/edgexfoundry/edgex-go
   version: delhi
   subpackages:
-  - /pkg/models
-  - /pkg/clients/logging
+  - pkg/clients/logging
+  - pkg/models
+- package: github.com/godbus/dbus
+- package: github.com/muka/go-bluetooth
+  subpackages:
+  - api
+  - bluez
+  - emitter
+- package: github.com/pkg/errors
+  version: ^0.8.1
