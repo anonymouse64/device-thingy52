@@ -104,6 +104,12 @@ func (d *Thingy52Driver) HandleReadCommands(
 	reqs []dsModels.CommandRequest,
 ) (res []*dsModels.CommandValue, err error) {
 
+	// if the device isn't connected fail immediately
+	if !d.Dev.IsConnected() {
+		err = fmt.Errorf("Thingy52Driver.HandleReadCommands; device is not connected")
+		return
+	}
+
 	if len(reqs) != 1 {
 		err = fmt.Errorf("Thingy52Driver.HandleReadCommands; too many command requests; only one supported")
 		return
