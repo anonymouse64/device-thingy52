@@ -1,6 +1,6 @@
-.PHONY: build test clean prepare update
+.PHONY: build test clean
 
-GO = CGO_ENABLED=0 GO111MODULE=off go
+GO = CGO_ENABLED=0 GO111MODULE=on go
 
 MICROSERVICES=cmd/device-thingy52
 
@@ -8,7 +8,7 @@ MICROSERVICES=cmd/device-thingy52
 
 VERSION=$(shell cat ./VERSION)
 GIT_SHA=$(shell git rev-parse HEAD)
-GOFLAGS=-ldflags "-X github.com/edgexfoundry/device-thingy52.Version=$(VERSION)"
+GOFLAGS=-ldflags "-X github.com/anonymouse64/device-thingy52.Version=$(VERSION)"
 
 build: $(MICROSERVICES)
 	$(GO) build ./...
@@ -20,9 +20,3 @@ test:
 
 clean:
 	rm -f $(MICROSERVICES)
-
-prepare:
-	glide install
-
-update:
-	glide update

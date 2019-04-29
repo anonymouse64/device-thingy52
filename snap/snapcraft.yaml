@@ -37,28 +37,11 @@ parts:
       - bin/*
     prime:
       - bin/go-service-wrapper.sh
-  glide:
-    plugin: dump
-    source:
-      - on amd64: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-amd64.tar.gz
-      - else:
-        - on arm64: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-arm64.tar.gz
-        - else:
-          - on armhf: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-armv7.tar.gz
-          - else:
-            - on i386: https://github.com/Masterminds/glide/releases/download/v0.12.3/glide-v0.12.3-linux-386.tar.gz
-      - else fail
-    prime:
-      - -*
-    organize:
-      glide: bin/glide
-    stage:
-      - bin/glide
   go:
     plugin: nil
     source: https://go.googlesource.com/go
     source-type: git
-    source-tag: go1.11.2
+    source-tag: go1.12.4
     source-depth: 1
     build-packages: [golang-go, g++]
     override-build: |
@@ -69,17 +52,15 @@ parts:
       - "bin"
     prime:
       - "-*"
-    after: [ci-snaps-common, glide]
+    after: [ci-snaps-common]
   device-thingy52:
     source: .
     plugin: make
-    after:
-      - go
+    after: [go]
+    build-packages: [mercurial, git, build-essential]
     override-build: |
-      . $SNAPCRAFT_STAGE/bin/go-build-helper.sh
-      gopartbootstrap github.com/anonymouse64/device-thingy52
-
-      make prepare
+      mkdir -p $SNAPCRAFT_PART_INSTALL/bin
+      cd $SNAPCRAFT_PART_SRC
       make build
 
       install -DT "./cmd/device-thingy52" "$SNAPCRAFT_PART_INSTALL/bin/device-thingy52"
