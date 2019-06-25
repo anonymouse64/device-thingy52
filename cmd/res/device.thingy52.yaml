@@ -15,13 +15,13 @@ deviceResources:
     units:
       { type: "String", readWrite: "R", defaultValue: "heading in degrees" }
 
-resources:
+deviceCommands:
 -
   name: "GenerateHeading_Float32"
   get:
-  - { operation: "get", object: "Heading", property: "value", parameter: "Heading" }
+  - { operation: "get", object: "Heading" }
 
-commands:
+coreCommands:
 -
   name: "GenerateHeading_Float32"
   get:

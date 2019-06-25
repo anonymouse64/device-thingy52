@@ -18,8 +18,8 @@ import (
 	"time"
 
 	dsModels "github.com/edgexfoundry/device-sdk-go/pkg/models"
-	logger "github.com/edgexfoundry/edgex-go/pkg/clients/logging"
-	"github.com/edgexfoundry/edgex-go/pkg/models"
+	"github.com/edgexfoundry/go-mod-core-contracts/clients/logger"
+	contract "github.com/edgexfoundry/go-mod-core-contracts/models"
 	"github.com/muka/go-bluetooth/api"
 	"github.com/pkg/errors"
 )
@@ -39,7 +39,7 @@ type thingy52Heading struct {
 }
 
 // DisconnectDevice disconnects the device
-func (d *Thingy52Driver) DisconnectDevice(addr *models.Addressable) error {
+func (d *Thingy52Driver) DisconnectDevice(addr *contract.Addressable) error {
 	d.lc.Info(fmt.Sprintf("Thingy52Driver.DisconnectDevice: device-thingy52 driver at %v is disconnecting", addr.Address))
 	return d.Dev.Disconnect()
 }
@@ -100,10 +100,10 @@ func (d *Thingy52Driver) Initialize(lc logger.LoggingClient, asyncCh chan<- *dsM
 
 // HandleReadCommands handles read commands from the device SDK
 func (d *Thingy52Driver) HandleReadCommands(
-	addr *models.Addressable,
+	deviceName string,
+	protocols map[string]contract.ProtocolProperties,
 	reqs []dsModels.CommandRequest,
 ) (res []*dsModels.CommandValue, err error) {
-
 	// if the device isn't connected fail immediately
 	if !d.Dev.IsConnected() {
 		err = fmt.Errorf("Thingy52Driver.HandleReadCommands; device is not connected")
@@ -168,7 +168,7 @@ func (d *Thingy52Driver) HandleReadCommands(
 	d.readingsQueue = make([]thingy52Heading, 0)
 
 	// create the command value for this request
-	cv, _ := dsModels.NewFloat32Value(&reqs[0].RO, lastReadingTime, circularMean)
+	cv, _ := dsModels.NewFloat32Value(reqs[0].DeviceResourceName, lastReadingTime, circularMean)
 	res[0] = cv
 
 	// turn the average unix time back into a real time.Time that we can print
@@ -184,8 +184,8 @@ func (d *Thingy52Driver) HandleReadCommands(
 
 // HandleWriteCommands does nothing becuase there are no write commands for
 // this device-service
-func (d *Thingy52Driver) HandleWriteCommands(addr *models.Addressable, params []dsModels.CommandRequest, val []*dsModels.CommandValue) error {
-	d.lc.Info(fmt.Sprintf("Thingy52Driver.HandleWriteCommands: device-thingy52 handling write commands for device at %v", addr.Address))
+func (d *Thingy52Driver) HandleWriteCommands(deviceName string, protocols map[string]contract.ProtocolProperties, reqs []dsModels.CommandRequest, params []*dsModels.CommandValue) error {
+	d.lc.Info(fmt.Sprintf("Thingy52Driver.HandleWriteCommands: device-thingy52 handling write commands for device %s", deviceName))
 	return nil
 }
 

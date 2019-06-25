@@ -1,47 +1,49 @@
+[Writable]
+  LogLevel = 'INFO'
+
 [Service]
-Host = "localhost"
-Port = 49973
-ConnectRetries = 3
-Labels = []
-OpenMsg = "device thingy52 started"
-ReadMaxLimit = 2560000000
-Timeout = 5000
-EnableAsyncReadings = true
-AsyncBufferSize = 16
+  Host = "localhost"
+  Port = 49973
+  ConnectRetries = 3
+  Labels = []
+  OpenMsg = "device thingy52 started"
+  Timeout = 5000
+  EnableAsyncReadings = true
+  AsyncBufferSize = 16
 
 [Registry]
-Host = "localhost"
-Port = 8500
-CheckInterval = "10s"
-FailLimit = 3
-FailWaitTime = 10
+  Host = "localhost"
+  Port = 8500
+  CheckInterval = "10s"
+  FailLimit = 3
+  FailWaitTime = 10
+  Type = "consul"
 
 [Logging]
-EnableRemote = false
-File = "./device-random.log"
-Level = "INFO"
+  EnableRemote = false
+  File = "./device-thingy52.log"
 
 [Clients]
   [Clients.Data]
-  Name = "edgex-core-data"
-  Protocol = "http"
-  Host = "localhost"
-  Port = 48080
-  Timeout = 5000
+    Name = "edgex-core-data"
+    Protocol = "http"
+    Host = "localhost"
+    Port = 48080
+    Timeout = 5000
 
   [Clients.Metadata]
-  Name = "edgex-core-metadata"
-  Protocol = "http"
-  Host = "localhost"
-  Port = 48081
-  Timeout = 5000
+    Name = "edgex-core-metadata"
+    Protocol = "http"
+    Host = "localhost"
+    Port = 48081
+    Timeout = 5000
 
   [Clients.Logging]
-  Name = "edgex-support-logging"
-  Protocol = "http"
-  Host = "localhost"
-  Port = 48061
-  Timeout = 5000
+    Name = "edgex-support-logging"
+    Protocol = "http"
+    Host = "localhost"
+    Port = 48061
+    Timeout = 5000
 
 [Device]
   DataTransform = true
@@ -59,18 +61,10 @@ Level = "INFO"
   Profile = "nordic-thingy52"
   Description = "Nordic Thingy52 BLE sensor device"
   Labels = [ "device-thingy52" ]
-  [DeviceList.Addressable]
-    Address = "nordic-thingy52-1"
-    Protocol = "OTHER"
-
-# Pre-define Schedule Configuration
-[[Schedules]]
-Name = "2hz-schedule"
-Frequency = "PT2S"
-
-[[ScheduleEvents]]
-Name = "read-nordic-thingy52-heading"
-Schedule = "2hz-schedule"
-  [ScheduleEvents.Addressable]
-  HTTPMethod = "GET"
-  Path = "/api/v1/device/name/nordic-thingy52-01/GenerateHeading_Float32"
+  [DeviceList.Protocols]
+    [DeviceList.Protocols.other]
+      Address = "nordic-thingy52-1"
+  [[DeviceList.AutoEvents]]
+    Frequency = "1s"
+    OnChange = false
+    Resource = "GenerateHeading_Float32"

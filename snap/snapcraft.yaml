@@ -2,7 +2,7 @@ name: edgex-device-thingy52
 base: core18
 version: "replace-me"
 version-script: |
-  echo 0.7.1-$(date +%Y%m%d)+$(git rev-parse --short HEAD)
+  echo $(cat VERSION)-$(date +%Y%m%d)+$(git rev-parse --short HEAD)
 license: Apache-2.0
 summary: EdgeX Device Service for Nordic Thingy52 BLE sensor
 description: |
@@ -20,7 +20,10 @@ architectures:
 
 apps:
   device-thingy52:
-    command: bin/go-service-wrapper.sh device-thingy52
+    command: bin/device-thingy52 -confdir $SNAP_DATA/config/device-thingy52 -profile res --registry $CONSUL_ADDR
+    adapter: none
+    environment:
+      CONSUL_ADDR: "consul://localhost:8500"
     daemon: simple
     restart-condition: always
     plugs: 
@@ -29,14 +32,6 @@ apps:
       - bluez
 
 parts:
-  ci-snaps-common:
-    plugin: dump
-    source: https://github.com/anonymouse64/ci-snaps-common.git
-    source-branch: feature/initial
-    stage:
-      - bin/*
-    prime:
-      - bin/go-service-wrapper.sh
   go:
     plugin: nil
     source: snap/local
@@ -69,7 +64,6 @@ parts:
       tar -C $SNAPCRAFT_STAGE -xf go*.tar.gz --strip-components=1
     prime:
       - "-*"
-    after: [ci-snaps-common]
   device-thingy52:
     source: .
     plugin: make
@@ -85,7 +79,8 @@ parts:
 
       # Override 'LogFile'      
       cat "./cmd/res/configuration.toml" | \
-        sed -e s:\"./device-thingy52.log\":\'\$SNAP_COMMON/device-thingy52.log\': > \
+        sed -e s:\"./device-thingy52.log\":\'\$SNAP_COMMON/device-thingy52.log\': \
+        -e s:'ProfilesDir = \"./res\"':'ProfilesDir = \"\$SNAP_DATA/config/device-thingy52/res\"': > \
         "$SNAPCRAFT_PART_INSTALL/config/device-thingy52/res/configuration.toml"
 
       # install device profile as well
