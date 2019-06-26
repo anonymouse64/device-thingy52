@@ -20,3 +20,6 @@ test:
 
 clean:
 	rm -f $(MICROSERVICES)
+
+run: build
+	cd cmd && ./device-thingy52
