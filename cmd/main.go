@@ -210,10 +210,10 @@ func main() {
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan, os.Interrupt)
 
-	// if we failed to run properly, log the error and trigger cleanup
 	go func() {
 		bleDev, err := run(cleanupDone, signalChan)
 		if err != nil {
+			// if we failed to run properly, log the error and trigger cleanup
 			log.Print(err)
 			signalChan <- os.Interrupt
 			return
@@ -223,7 +223,7 @@ func main() {
 			InterruptChan: signalChan,
 		}
 		// start the device service in the background
-		go startup.Bootstrap(serviceName, version, &d)
+		startup.Bootstrap(serviceName, version, &d)
 	}()
 
 	// wait for the cleanup to finish
