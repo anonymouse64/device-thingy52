@@ -21,7 +21,7 @@ const (
 	// TODO: make these things configurable
 	debug                   = true
 	defaultBluetoothAdapter = "hci0"
-	thingy52BLEAddress      = "C2:FE:6A:0F:91:15"
+	thingy52BLEAddress      = "EB:B8:28:5B:6A:38"
 )
 
 // run will performs the main actions with the device, setting up backgrond
