@@ -177,8 +177,8 @@ func (d *Thingy52Driver) HandleReadCommands(
 	unixTimeSec := math.Floor(unixTime)
 	unixTimeNSec := int64((unixTime - unixTimeSec) * float64(time.Second/time.Nanosecond))
 	readingTime := time.Unix(int64(unixTimeSec), unixTimeNSec)
-	d.lc.Info(fmt.Sprintf("Thingy52Driver.HandleReadCommands: avg heading = %f @ t = %v took %v", circularMean, readingTime, time.Since(start)))
 
+	d.lc.Debug(fmt.Sprintf("Thingy52Driver.HandleReadCommands: avg heading = %f @ t = %v took %v", circularMean, readingTime, time.Since(start)))
 	return res, nil
 }
 
