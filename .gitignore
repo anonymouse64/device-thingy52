@@ -1,3 +1,4 @@
 vendor/
 cmd/device-thingy52
 *.snap
+*.log
