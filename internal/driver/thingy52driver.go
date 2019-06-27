@@ -59,8 +59,6 @@ func (d *Thingy52Driver) WaitForInitStarted(ctx context.Context) error {
 	case <-d.initChan:
 		return nil
 	}
-
-	return nil
 }
 
 // FinishedRegisteringDevices will send a signal that devices are done being
@@ -75,8 +73,6 @@ func (d *Thingy52Driver) FinishedRegisteringDevices(ctx context.Context) error {
 	case d.devRegistrationDone <- struct{}{}:
 		return nil
 	}
-
-	return nil
 }
 
 // waitForDevicesRegistered waits until the registration is done
@@ -90,8 +86,6 @@ func (d *Thingy52Driver) waitForDevicesRegistered(ctx context.Context) error {
 	case <-d.devRegistrationDone:
 		return nil
 	}
-
-	return nil
 }
 
 // RegisterBLEDevice adds a device to the Thingy52Driver and starts running a
