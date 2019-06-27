@@ -11,6 +11,9 @@
   EnableAsyncReadings = true
   AsyncBufferSize = 16
 
+[Driver]
+  Debug = "true"
+
 [Registry]
   Host = "localhost"
   Port = 8500
@@ -57,13 +60,13 @@
 
 # Pre-define Devices
 [[DeviceList]]
-  Name = "nordic-thingy52-01"
+  Name = "Viking2"
   Profile = "nordic-thingy52"
   Description = "Nordic Thingy52 BLE sensor device"
   Labels = [ "device-thingy52" ]
   [DeviceList.Protocols]
-    [DeviceList.Protocols.other]
-      Address = "nordic-thingy52-1"
+    [DeviceList.Protocols.BLE]
+      Address = "EB:B8:28:5B:6A:38"
   [[DeviceList.AutoEvents]]
     Frequency = "1s"
     OnChange = false
