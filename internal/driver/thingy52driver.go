@@ -232,7 +232,7 @@ func (d *Thingy52Driver) HandleReadCommands(
 
 	// get the time at the start of the request
 	// this is useful in debugging how long requests take before a value is
-	// recieved from the sensor
+	// received from the sensor
 	start := time.Now()
 
 	// acquire the lock for reading from the queue and wait until the queue
@@ -311,7 +311,7 @@ func (d *Thingy52Driver) HandleReadCommands(
 	return res, nil
 }
 
-// HandleWriteCommands does nothing becuase there are no write commands for
+// HandleWriteCommands does nothing because there are no write commands for
 // this device-service
 func (d *Thingy52Driver) HandleWriteCommands(
 	deviceName string,
@@ -325,7 +325,7 @@ func (d *Thingy52Driver) HandleWriteCommands(
 
 // Stop will kill the background process reading from the program
 func (d *Thingy52Driver) Stop(force bool) (err error) {
-	// Stop could get called before Initialize, when we recieve our logger,
+	// Stop could get called before Initialize, when we receive our logger,
 	// so check if it's nil before using it
 	if d.lc != nil {
 		d.lc.Info("Thingy52Driver.Stop: device-thingy52 driver is stopping...")
