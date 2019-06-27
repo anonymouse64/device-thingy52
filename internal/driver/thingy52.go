@@ -113,7 +113,7 @@ func RetryFunc(numTimes uint, waitTime time.Duration, theFunc func() error) ([]e
 // register callback takes a characteristic uuid and a callback function, and
 // sets up notifications for the characteristic uuid to call the provided
 // cb with the data returned
-func registerNotifyCallback(ctx context.Context, dev *api.Device, charuuid string, cb func(data []byte)) error {
+func registerNotifyCallback(ctx context.Context, errorChanel chan error, dev *api.Device, charuuid string, cb func(data []byte)) error {
 	// get the heading data characteristic
 	data, err := dev.GetCharByUUID(charuuid)
 	if err != nil {
@@ -159,37 +159,65 @@ func registerNotifyCallback(ctx context.Context, dev *api.Device, charuuid strin
 	}
 
 	// in the background listen for events on the characteristic data channel
-	go func() {
-		// TODO: check the provided context here too for cancellation
-		for event := range dataChannel {
+	go handleEvents(ctx, dataChannel, errorChanel, uuidAndService, cb)
+
+	return nil
+}
+
+func handleEvents(
+	ctx context.Context,
+	dataChannel chan *dbus.Signal,
+	errChannel chan error,
+	uuidAndService string,
+	cb func(data []byte),
+) {
+	for {
+		select {
+		case <-ctx.Done():
+			errChannel <- errors.Wrap(
+				ctx.Err(),
+				"waiting for notify events interrupted",
+			)
+		case event := <-dataChannel:
 			if event == nil {
 				return
 			}
 			if strings.Contains(fmt.Sprint(event.Path), uuidAndService) {
-				switch event.Body[0].(type) {
-				case dbus.ObjectPath:
+				// make sure the event Body has at least two element
+				if len(event.Body) < 2 {
 					continue
-				case string:
 				}
 
+				// ensure the first body element is not a dbus object path
+				if _, ok := event.Body[0].(dbus.ObjectPath); ok {
+					continue
+				}
+
+				// also make sure the body is not the gatt characteristic str
 				if event.Body[0] != bluez.GattCharacteristic1Interface {
 					continue
 				}
 
-				props := event.Body[1].(map[string]dbus.Variant)
-				if _, ok := props["Value"]; !ok {
-					continue
-				}
-				b, ok := props["Value"].Value().([]byte)
+				// make sure the second body of the event is a map to dbus
+				// variants
+				props, ok := event.Body[1].(map[string]dbus.Variant)
 				if !ok {
 					continue
 				}
 
-				// call the user's callback with the value bytes
-				cb(b)
+				// ensure there is a value key
+				val, ok := props["Value"]
+				if !ok {
+					continue
+				}
+
+				// ensure the value is a byte array
+				b, ok := val.Value().([]byte)
+				if ok {
+					// call the user's callback with the value bytes
+					cb(b)
+				}
 			}
 		}
-	}()
-
-	return nil
+	}
 }

@@ -124,9 +124,11 @@ func (d *Thingy52Driver) RegisterBLEDevice(
 	errRes, err := RetryFunc(100, 100*time.Millisecond, func() error {
 		return registerNotifyCallback(
 			context.TODO(),
+			d.errChan,
 			dev,
 			motionUUID,
-			func(b []byte) {
+			func(b []byte,
+			) {
 				// the heading is returned in fixed point Q16.16 (aka 16Q16 as
 				// Nordic docs refer to it) format, so first create an exact
 				// integer from the full bytes and make a rational number
